@@ -9,6 +9,7 @@ import (
 	"github.com/waliqueiroz/podcastr-api/controllers"
 	"github.com/waliqueiroz/podcastr-api/database"
 	"github.com/waliqueiroz/podcastr-api/repositories"
+	"github.com/waliqueiroz/podcastr-api/router"
 	"github.com/waliqueiroz/podcastr-api/services"
 )
 
@@ -27,7 +28,10 @@ func main() {
 	episodeController := controllers.NewEpisodeController(espisodeService)
 
 	app := fiber.New()
-	app.Get("/", episodeController.Index)
+
+	api := app.Group("/api")
+
+	router.SetupEpisodeRoutes(api, episodeController)
 
 	app.Listen(":8080")
 }
