@@ -8,4 +8,5 @@ import (
 func SetupEpisodeRoutes(router fiber.Router, episodeController *controllers.EpisodeController) {
 	router.Get("/episodes", episodeController.Index)
 	router.Post("/episodes", episodeController.Create)
+	router.Delete("/episodes/:episodeID", episodeController.Delete)
 }

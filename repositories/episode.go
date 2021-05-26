@@ -21,6 +21,31 @@ func NewEpisodeRepository(ctx context.Context, db *mongo.Database) *EpisodeRepos
 	}
 }
 
+func (repository *EpisodeRepository) FindAll() ([]models.Episode, error) {
+	result, err := repository.episodeCollection.Find(repository.ctx, bson.M{})
+
+	if err != nil {
+		return []models.Episode{}, err
+	}
+
+	defer result.Close(repository.ctx)
+
+	var episodes []models.Episode
+
+	for result.Next(repository.ctx) {
+		var episode models.Episode
+
+		err := result.Decode(&episode)
+		if err != nil {
+			return []models.Episode{}, err
+		}
+
+		episodes = append(episodes, episode)
+	}
+
+	return episodes, nil
+}
+
 func (repository *EpisodeRepository) Create(episode models.Episode) (models.Episode, error) {
 	result, err := repository.episodeCollection.InsertOne(repository.ctx, episode)
 	if err != nil {
@@ -32,9 +57,9 @@ func (repository *EpisodeRepository) Create(episode models.Episode) (models.Epis
 	return repository.FindById(objectID.Hex())
 }
 
-func (repository *EpisodeRepository) FindById(id string) (models.Episode, error) {
-	episodeID, _ := primitive.ObjectIDFromHex(id)
-	filter := bson.M{"_id": episodeID}
+func (repository *EpisodeRepository) FindById(episodeID string) (models.Episode, error) {
+	id, _ := primitive.ObjectIDFromHex(episodeID)
+	filter := bson.M{"_id": id}
 
 	result := repository.episodeCollection.FindOne(repository.ctx, filter)
 
@@ -46,4 +71,17 @@ func (repository *EpisodeRepository) FindById(id string) (models.Episode, error)
 	}
 
 	return episode, nil
+}
+
+func (repository *EpisodeRepository) Delete(episodeID string) error {
+	id, _ := primitive.ObjectIDFromHex(episodeID)
+	filter := bson.M{"_id": id}
+
+	_, err := repository.episodeCollection.DeleteOne(repository.ctx, filter)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

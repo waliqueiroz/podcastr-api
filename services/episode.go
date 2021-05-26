@@ -15,6 +15,14 @@ func NewEpisodeService(episodeRepository *repositories.EpisodeRepository) *Episo
 	}
 }
 
+func (service *EpisodeService) FindAll() ([]models.Episode, error) {
+	return service.episodeRepository.FindAll()
+}
+
 func (service *EpisodeService) Create(episode models.Episode) (models.Episode, error) {
 	return service.episodeRepository.Create(episode)
+}
+
+func (service *EpisodeService) Delete(episodeID string) error {
+	return service.episodeRepository.Delete(episodeID)
 }

@@ -19,7 +19,13 @@ func NewEpisodeController(episodeService *services.EpisodeService) *EpisodeContr
 }
 
 func (controller *EpisodeController) Index(c *fiber.Ctx) error {
-	return c.SendString("Hello, World 👋!")
+	episodes, err := controller.episodeService.FindAll()
+
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return c.JSON(episodes)
 }
 
 func (controller *EpisodeController) Create(c *fiber.Ctx) error {
@@ -38,4 +44,16 @@ func (controller *EpisodeController) Create(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(createdEpisode)
+}
+
+func (controller *EpisodeController) Delete(c *fiber.Ctx) error {
+	episodeID := c.Params("episodeID")
+
+	err := controller.episodeService.Delete(episodeID)
+
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return c.SendStatus(fiber.StatusOK)
 }
