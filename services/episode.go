@@ -23,6 +23,10 @@ func (service *EpisodeService) Create(episode models.Episode) (models.Episode, e
 	return service.episodeRepository.Create(episode)
 }
 
+func (service *EpisodeService) FindBySlug(episodeSlug string) (models.Episode, error) {
+	return service.episodeRepository.FindBySlug(episodeSlug)
+}
+
 func (service *EpisodeService) Delete(episodeID string) error {
 	return service.episodeRepository.Delete(episodeID)
 }

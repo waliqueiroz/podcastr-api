@@ -9,4 +9,5 @@ func SetupEpisodeRoutes(router fiber.Router, episodeController *controllers.Epis
 	router.Get("/episodes", episodeController.Index)
 	router.Post("/episodes", episodeController.Create)
 	router.Delete("/episodes/:episodeID", episodeController.Delete)
+	router.Get("/episodes/:episodeSlug", episodeController.FindBySlug)
 }

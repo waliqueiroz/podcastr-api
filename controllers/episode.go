@@ -46,6 +46,18 @@ func (controller *EpisodeController) Create(c *fiber.Ctx) error {
 	return c.JSON(createdEpisode)
 }
 
+func (controller *EpisodeController) FindBySlug(c *fiber.Ctx) error {
+	episodeSlug := c.Params("episodeSlug")
+
+	episode, err := controller.episodeService.FindBySlug(episodeSlug)
+
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	return c.JSON(episode)
+}
+
 func (controller *EpisodeController) Delete(c *fiber.Ctx) error {
 	episodeID := c.Params("episodeID")
 

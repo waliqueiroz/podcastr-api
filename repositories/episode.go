@@ -72,6 +72,20 @@ func (repository *EpisodeRepository) FindById(episodeID string) (models.Episode,
 
 	return episode, nil
 }
+func (repository *EpisodeRepository) FindBySlug(episodeSlug string) (models.Episode, error) {
+	filter := bson.M{"slug": episodeSlug}
+
+	result := repository.episodeCollection.FindOne(repository.ctx, filter)
+
+	var episode models.Episode
+
+	err := result.Decode(&episode)
+	if err != nil {
+		return models.Episode{}, err
+	}
+
+	return episode, nil
+}
 
 func (repository *EpisodeRepository) Delete(episodeID string) error {
 	id, _ := primitive.ObjectIDFromHex(episodeID)
